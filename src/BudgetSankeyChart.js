@@ -23,12 +23,13 @@ function BudgetSankeyChart(props) {
         labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1 ] ] }}
         linkTooltip={node => (
         <span>
-            {node.source.label} directs {node.value / 1000000} million to {node.target.label} service.
+          {node.source.label} directs {node.value / 1000000} million to {node.target.label} service.
         </span>
         )}
         animate={true}
         motionStiffness={140}
         motionDamping={13}
+        onClick={(data, event) => console.log({ data, event })} 
     />
   );
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import './budgetChart.css';
 import BudgetSankeyChart from './BudgetSankeyChart';
 
 function getApprovedAmountByService(service) {
@@ -27,9 +26,7 @@ function BudgetChart(props) {
 
 
   return (
-    <div className="chart-container">
       <BudgetSankeyChart data={ result }/>
-    </div>
   );
 }
 
