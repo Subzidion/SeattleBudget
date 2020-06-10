@@ -8,12 +8,23 @@ const { Header, Content } = Layout;
 
 function SeattleBudget() {
   const [data, setData] = useState();
+  const [node, setNode] = useState();
+
   
   useEffect(() => {
-    budgetData.then(data => {
-      setData(data);
-    })
-  }, []);
+    if(data == null) {
+      console.log("Initial Data");
+      budgetData.then(data => {
+        setData(data["2019"]);
+      });
+    } else {
+      if(node) {
+        console.log("Change node");
+        console.log(data[node]);
+        //setData(data[node])
+      }
+    }
+  }, [node]);
 
   if(data) {
     return (
@@ -29,10 +40,11 @@ function SeattleBudget() {
             <Breadcrumb style={{ margin: '16px 0' }}>
               <Breadcrumb.Item>Seattle Budget</Breadcrumb.Item>
               <Breadcrumb.Item>Overview</Breadcrumb.Item>
+              <Breadcrumb.Item>{ node }</Breadcrumb.Item>
             </Breadcrumb>
             <Content className="site-layout-background" style={{ margin: 0 }}>
               <div className="site-layout-content">
-                <BudgetChart data={ data["2019"] }/>
+                <BudgetChart data={ data } onNodeClick={ setNode } />
               </div>
             </Content>
           </Layout>
