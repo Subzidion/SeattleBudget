@@ -29,7 +29,13 @@ function BudgetSankeyChart(props) {
         animate={true}
         motionStiffness={140}
         motionDamping={13}
-        onClick={(data, event) => console.log({ data, event })} 
+        onClick={(data, event) => {
+          if("id" in data) {
+            props.onNodeClick(data.id);
+          } else if("target" in data) {
+            props.onNodeClick(data.target.id);
+          }
+        } }
     />
   );
 }

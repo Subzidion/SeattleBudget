@@ -26,7 +26,7 @@ function BudgetChart(props) {
 
 
   return (
-      <BudgetSankeyChart data={ result }/>
+      <BudgetSankeyChart data={ result } onNodeClick={ props.onNodeClick } />
   );
 }
 
