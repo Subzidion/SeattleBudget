@@ -8,25 +8,27 @@ const { Header, Content } = Layout;
 
 function SeattleBudget() {
   const [data, setData] = useState();
+  const [graphData, setGraphData] = useState();
   const [node, setNode] = useState();
 
   useEffect(() => {
       budgetData.then(data => {
         setData(data["2019"]);
+        setGraphData(data["2019"]);
       });
   }, [])
   
   useEffect(() => {
     if(node) {
-      setData(data["children"][node])
+      setGraphData(graphData["children"][node]);
     }
   }, [node]);
 
-  let chartBlock;
-  if(data) {
-    chartBlock = <BudgetChart data={ data } onNodeClick={ setNode } />
+  let content;
+  if(!graphData) {
+    content = "Loading..."
   } else {
-    chartBlock = "Loading..."
+    content = <BudgetChart data={ graphData } onNodeClick={ setNode } />
   }
 
     return (
@@ -40,13 +42,13 @@ function SeattleBudget() {
         <Layout>
           <Layout style={{ padding: '0 24px 24px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>Seattle Budget</Breadcrumb.Item>
-              <Breadcrumb.Item>Overview</Breadcrumb.Item>
+              <Breadcrumb.Item>Seattle Budget { "2019" }</Breadcrumb.Item>
+              <Breadcrumb.Item>General Fund</Breadcrumb.Item>
               <Breadcrumb.Item>{ node }</Breadcrumb.Item>
             </Breadcrumb>
             <Content className="site-layout-background" style={{ margin: 0 }}>
               <div className="site-layout-content">
-                { chartBlock }
+                { content }
               </div>
             </Content>
           </Layout>
