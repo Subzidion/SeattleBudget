@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
-import BudgetChart from './BudgetChart';
+import BudgetSankeyChart from './BudgetSankeyChart';
 import { budgetData } from './BudgetDataProvider';
 
 const { Header, Content } = Layout;
@@ -37,7 +37,7 @@ function SeattleBudget() {
     console.log(graphData);
     content = graphData["id"] + ": " + graphData["approved_amount"]
   } else {
-    content = <BudgetChart data={ graphData } onNodeClick={ setNode } />
+    content = <BudgetSankeyChart data={ graphData } onNodeClick={ setNode } />
   }
 
   return (
