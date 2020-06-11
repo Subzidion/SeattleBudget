@@ -2,9 +2,21 @@ import React from 'react';
 import { ResponsiveSankey } from '@nivo/sankey'
 
 function BudgetSankeyChart(props) {
+  let chartData = Object.keys(props["data"]["children"]).reduce((chart, child) => {
+    chart["nodes"].push({
+      "id": props["data"]["children"][child]["id"]
+    });
+    chart["links"].push({
+      "source": props["data"]["id"],
+      "target": props["data"]["children"][child]["id"],
+      "value": props["data"]["children"][child]["approved_amount"]
+    });
+    return chart;
+  }, {"nodes": [{"id": props["data"]["id"]}], "links": []});
+
   return (
     <ResponsiveSankey
-        data={props["data"]}
+        data={ chartData }
         margin={{ top: 40, right: 250, bottom: 40, left: 150 }}
         align="justify"
         colors={{ scheme: 'category10' }}
