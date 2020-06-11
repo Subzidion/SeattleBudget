@@ -1,32 +1,21 @@
 import React from 'react';
 import BudgetSankeyChart from './BudgetSankeyChart';
 
-function getApprovedAmountByService(service) {
-  return Object.keys(service).reduce((serviceBudget, department) => {
-    return serviceBudget + Object.keys(service[department]).reduce((departmentBudget, program) => {
-      return departmentBudget + service[department][program].reduce((programBudget, expense) => {
-        return programBudget + (parseInt(expense["approved_amount"], 10) || 0);
-      }, 0)
-    }, 0)
-  }, 0)
-}
-
 function BudgetChart(props) {
-  let result = Object.keys(props["data"]).reduce((obj, service) => {
-      obj["nodes"].push({
-        "id": service
+  let result = Object.keys(props["data"]["children"]).reduce((chart, child) => {
+      chart["nodes"].push({
+        "id": props["data"]["children"][child]["id"]
       });
-      obj["links"].push({
-        "source": "General Fund",
-        "target": service,
-        "value": getApprovedAmountByService(props["data"][service])
+      chart["links"].push({
+        "source": props["data"]["id"],
+        "target": props["data"]["children"][child]["id"],
+        "value": props["data"]["children"][child]["total"]
       });
-      return obj;
-  }, {"nodes": [{"id": "General Fund"}], "links": []});
-
+      return chart;
+  }, {"nodes": [{"id": props["data"]["id"]}], "links": []});
 
   return (
-      <BudgetSankeyChart data={ result } onNodeClick={ props.onNodeClick } />
+    <BudgetSankeyChart data={ result } onNodeClick={ props.onNodeClick } />
   );
 }
 

@@ -15,6 +15,7 @@ function SeattleBudget() {
     if(data == null) {
       console.log("Initial Data");
       budgetData.then(data => {
+        console.log(data);
         setData(data["2019"]);
       });
     } else {
