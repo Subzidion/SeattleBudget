@@ -10,24 +10,25 @@ function SeattleBudget() {
   const [data, setData] = useState();
   const [node, setNode] = useState();
 
-  
   useEffect(() => {
-    if(data == null) {
-      console.log("Initial Data");
       budgetData.then(data => {
-        console.log(data);
         setData(data["2019"]);
       });
-    } else {
-      if(node) {
-        console.log("Change node");
-        console.log(data[node]);
-        //setData(data[node])
-      }
+  }, [])
+  
+  useEffect(() => {
+    if(node) {
+      setData(data["children"][node])
     }
   }, [node]);
 
+  let chartBlock;
   if(data) {
+    chartBlock = <BudgetChart data={ data } onNodeClick={ setNode } />
+  } else {
+    chartBlock = "Loading..."
+  }
+
     return (
       <Layout style={{ height: '100vh' }}>
         <Header className="header">
@@ -45,16 +46,13 @@ function SeattleBudget() {
             </Breadcrumb>
             <Content className="site-layout-background" style={{ margin: 0 }}>
               <div className="site-layout-content">
-                <BudgetChart data={ data } onNodeClick={ setNode } />
+                { chartBlock }
               </div>
             </Content>
           </Layout>
         </Layout>
       </Layout>
     );
-  } else {
-    return (<div>"Loading..."</div>)
-  }
 }
   
     
