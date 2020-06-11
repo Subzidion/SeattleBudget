@@ -9,7 +9,7 @@ function BudgetChart(props) {
       chart["links"].push({
         "source": props["data"]["id"],
         "target": props["data"]["children"][child]["id"],
-        "value": props["data"]["children"][child]["total"]
+        "value": props["data"]["children"][child]["approved_amount"]
       });
       return chart;
   }, {"nodes": [{"id": props["data"]["id"]}], "links": []});
