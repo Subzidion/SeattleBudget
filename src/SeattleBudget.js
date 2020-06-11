@@ -13,17 +13,21 @@ function SeattleBudget() {
   const [fiscalYear] = useState("2019");
 
   useEffect(() => {
-      budgetData.then(data => {
-        setData(data[fiscalYear]);
-        setGraphData(data[fiscalYear]);
-      });
+    budgetData.then(data => {
+      setData(data);
+      setGraphData(data[fiscalYear]);
+    });
   }, [])
   
   useEffect(() => {
-    if(node) {
-      setGraphData(previousGraphData => previousGraphData["children"][node]);
+    if(graphData) {
+      if(node) {
+        setGraphData(previousGraphData => previousGraphData["children"][node]);
+      } else {
+        setGraphData(data[fiscalYear]);
+      }
     }
-  }, [node]);
+  }, [node, fiscalYear]);
 
   let content;
   if(!graphData) {
@@ -47,7 +51,7 @@ function SeattleBudget() {
       <Layout>
         <Layout style={{ padding: '0 24px 24px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Seattle Budget { fiscalYear }</Breadcrumb.Item>
+            <Breadcrumb.Item onClick={() => setNode(null) }>Seattle Budget { fiscalYear }</Breadcrumb.Item>
             <Breadcrumb.Item>General Fund</Breadcrumb.Item>
             <Breadcrumb.Item>{ node }</Breadcrumb.Item>
           </Breadcrumb>
