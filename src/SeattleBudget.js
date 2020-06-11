@@ -27,6 +27,10 @@ function SeattleBudget() {
   let content;
   if(!graphData) {
     content = "Loading..."
+  }
+  else if(!graphData["children"]) {
+    console.log(graphData);
+    content = graphData["id"] + ": " + graphData["approved_amount"]
   } else {
     content = <BudgetChart data={ graphData } onNodeClick={ setNode } />
   }
