@@ -1,29 +1,29 @@
 function normalize(tree, row) {
   if(!tree[row["fiscal_year"]]) {
-    tree = {...tree, [row["fiscal_year"]]: {id: "General Fund", total: 0, children: {}}}
+    tree = {...tree, [row["fiscal_year"]]: {id: "General Fund", approved_amount: 0, children: {}}}
   }
   if(!tree[row["fiscal_year"]]["children"][row["service"]]) {
-    tree[row["fiscal_year"]]["children"] = {...tree[row["fiscal_year"]]["children"], [row["service"]]: {id: row["service"], total: 0, children: {}}}
+    tree[row["fiscal_year"]]["children"] = {...tree[row["fiscal_year"]]["children"], [row["service"]]: {id: row["service"], approved_amount: 0, children: {}}}
   }
   if(!tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]) {
     tree[row["fiscal_year"]]["children"][row["service"]]["children"] = {...tree[row["fiscal_year"]]["children"][row["service"]]["children"],
-                                                [row["department"]]: {id: row["department"], total: 0, children: {}}}
+                                                [row["department"]]: {id: row["department"], approved_amount: 0, children: {}}}
   }
   if(!tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"][row["program"]]) {
     tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"] =
-    {...tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"], [row["program"]]: {id: row["program"], total: 0, children: {}}}
+    {...tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"], [row["program"]]: {id: row["program"], approved_amount: 0, children: {}}}
   }
   // Increment amounts
   let approved_amount = (parseInt(row["approved_amount"]) || 0)
-  tree[row["fiscal_year"]]["total"] += approved_amount
-  tree[row["fiscal_year"]]["children"][row["service"]]["total"] += approved_amount
-  tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["total"] += approved_amount
-  tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"][row["program"]]["total"] += approved_amount
+  tree[row["fiscal_year"]]["approved_amount"] += approved_amount
+  tree[row["fiscal_year"]]["children"][row["service"]]["approved_amount"] += approved_amount
+  tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["approved_amount"] += approved_amount
+  tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"][row["program"]]["approved_amount"] += approved_amount
 
   // Add Expense Category
   tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"][row["program"]]["children"] = 
   {...tree[row["fiscal_year"]]["children"][row["service"]]["children"][row["department"]]["children"][row["program"]]["children"],
-   expense_category: {id: row["expense_category"], approved_amount: approved_amount}}
+   [row["expense_category"]]: {id: row["expense_category"], approved_amount: approved_amount}}
   
   return tree;
 }
