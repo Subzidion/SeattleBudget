@@ -1,11 +1,18 @@
 import React from 'react';
 import { ResponsiveSankey } from '@nivo/sankey'
 
+const nodeSortByApprovedAmount = (nodeA, nodeB) => {
+  if (nodeA.approved_amount > nodeB.approved_amount) return -1
+  if (nodeA.approved_amount < nodeB.approved_amount) return 1
+  return 0
+}
+
 function BudgetSankeyChart(props) {
   let chartData = Object.keys(props["data"]["children"]).reduce((chart, child) => {
     chart["nodes"].push({
       "id": props["data"]["children"][child]["id"],
-      "label": props["data"]["children"][child]["label"]
+      "label": props["data"]["children"][child]["label"],
+      "approved_amount": props["data"]["children"][child]["approved_amount"]
     });
     chart["links"].push({
       "source": props["data"]["id"],
@@ -13,7 +20,7 @@ function BudgetSankeyChart(props) {
       "value": props["data"]["children"][child]["approved_amount"]
     });
     return chart;
-  }, {"nodes": [{"id": props["data"]["id"], "label": props["data"]["label"]}], "links": []});
+  }, {"nodes": [{"id": props["data"]["id"], "label": props["data"]["label"], "approved_amount": props["data"]["approved_amount"]}], "links": []});
 
   return (
     <ResponsiveSankey
@@ -43,6 +50,7 @@ function BudgetSankeyChart(props) {
         animate={true}
         motionStiffness={140}
         motionDamping={13}
+        sort={nodeSortByApprovedAmount}
         onClick={(data, event) => {
           if("id" in data) {
             props.onNodeClick(data.id);
