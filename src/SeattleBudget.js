@@ -6,6 +6,13 @@ import { budgetDataProvider } from './BudgetDataProvider';
 
 const { Header, Content } = Layout;
 
+const cleanNodeLabel = (node) => {
+  if(node.indexOf("|") === -1) {
+    return node;
+  }
+  return node.substring(0, node.indexOf("|"));
+}
+
 function SeattleBudget() {
   const [budgetData, setBudgetData] = useState();
   const [graphData, setGraphData] = useState();
@@ -45,7 +52,7 @@ function SeattleBudget() {
   treePath.forEach((node, index) => {
     graphTreeBreadcrumbs.push(
       <Breadcrumb.Item key={ index } onClick={() => handleNodeClick(node, 1) }>
-        { node }
+        { cleanNodeLabel(node) }
       </Breadcrumb.Item>
     );
   })
