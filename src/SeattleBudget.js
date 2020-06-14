@@ -34,8 +34,7 @@ function SeattleBudget() {
     content = "Loading..."
   }
   else if(!graphData["children"]) {
-    console.log(graphData);
-    content = graphData["id"] + ": " + graphData["approved_amount"]
+    content = graphData["label"] + ": " + graphData["approved_amount"]
   } else {
     content = <BudgetSankeyChart data={ graphData } onNodeClick={ setNode } />
   }

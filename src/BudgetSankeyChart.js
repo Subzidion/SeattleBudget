@@ -4,7 +4,8 @@ import { ResponsiveSankey } from '@nivo/sankey'
 function BudgetSankeyChart(props) {
   let chartData = Object.keys(props["data"]["children"]).reduce((chart, child) => {
     chart["nodes"].push({
-      "id": props["data"]["children"][child]["id"]
+      "id": props["data"]["children"][child]["id"],
+      "label": props["data"]["children"][child]["label"]
     });
     chart["links"].push({
       "source": props["data"]["id"],
@@ -12,7 +13,7 @@ function BudgetSankeyChart(props) {
       "value": props["data"]["children"][child]["approved_amount"]
     });
     return chart;
-  }, {"nodes": [{"id": props["data"]["id"]}], "links": []});
+  }, {"nodes": [{"id": props["data"]["id"], "label": props["data"]["label"]}], "links": []});
 
   return (
     <ResponsiveSankey
@@ -29,6 +30,7 @@ function BudgetSankeyChart(props) {
         linkOpacity={0.5}
         linkHoverOthersOpacity={0.1}
         enableLinkGradient={true}
+        label={ node => node.label }
         labelPosition="outside"
         labelOrientation="horizontal"
         labelPadding={16}
