@@ -7,6 +7,21 @@ const nodeSortByApprovedAmount = (nodeA, nodeB) => {
   return 0
 }
 
+const humanReadableDollars = (number) => {
+  let qualifier = "";
+  if(number / 1000000000 >= 1) {
+    number = (number / 1000000000).toFixed(2)
+    qualifier = " billion"
+  }
+  else if(number / 1000000 >= 1) {
+    number = (number / 1000000).toFixed(2)
+    qualifier = " million"
+  } else {
+    number = number.toLocaleString()
+  }
+  return "$" + number + qualifier;
+}
+
 function BudgetSankeyChart(props) {
   let chartData = Object.keys(props["data"]["children"]).reduce((chart, child) => {
     chart["nodes"].push({
@@ -44,7 +59,7 @@ function BudgetSankeyChart(props) {
         labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1 ] ] }}
         linkTooltip={node => (
         <span>
-          {node.source.label} directs {node.value / 1000000} million to {node.target.label} service.
+          {node.source.label} directs {humanReadableDollars(node.value)} to {node.target.label}.
         </span>
         )}
         animate={true}
