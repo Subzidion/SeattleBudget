@@ -2,32 +2,53 @@ import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import BudgetSankeyChart from './BudgetSankeyChart';
-import { budgetData } from './BudgetDataProvider';
+import { budgetDataProvider } from './BudgetDataProvider';
 
 const { Header, Content } = Layout;
 
 function SeattleBudget() {
-  const [data, setData] = useState();
+  const [budgetData, setBudgetData] = useState();
   const [graphData, setGraphData] = useState();
-  const [node, setNode] = useState();
+  const [treePath, setTreePath] = useState(["General Fund"]);
   const [fiscalYear] = useState("2019");
 
+  const handleNodeClick = (clickedNode, offset=0) => {
+    setTreePath(currentPath => {
+      if(currentPath.indexOf(clickedNode) !== -1) {
+        if(currentPath.length === 1) {
+          return currentPath
+        }
+        return currentPath.slice(0, currentPath.indexOf(clickedNode) + offset)
+      } else {
+        return [...currentPath, clickedNode]
+      }
+    })
+  }
+
   useEffect(() => {
-    budgetData.then(data => {
-      setData(data);
+    budgetDataProvider.then(data => {
+      setBudgetData(data);
       setGraphData(data[fiscalYear]);
     });
   }, [])
   
   useEffect(() => {
-    if(graphData) {
-      if(node) {
-        setGraphData(previousGraphData => previousGraphData["children"][node]);
-      } else {
-        setGraphData(data[fiscalYear]);
-      }
+    if(budgetData) {
+      setGraphData(treePath.reduce((data, node) => {
+        if(node === "General Fund") return data;
+        return data["children"][node];
+      }, budgetData["2019"]));
     }
-  }, [node, fiscalYear]);
+  }, [treePath, budgetData]);
+
+  let graphTreeBreadcrumbs = [];
+  treePath.forEach((node, index) => {
+    graphTreeBreadcrumbs.push(
+      <Breadcrumb.Item key={ index } onClick={() => handleNodeClick(node, 1) }>
+        { node }
+      </Breadcrumb.Item>
+    );
+  })
 
   let content;
   if(!graphData) {
@@ -36,7 +57,7 @@ function SeattleBudget() {
   else if(!graphData["children"]) {
     content = graphData["label"] + ": " + graphData["approved_amount"]
   } else {
-    content = <BudgetSankeyChart data={ graphData } onNodeClick={ setNode } />
+    content = <BudgetSankeyChart data={ graphData } onNodeClick={ handleNodeClick } />
   }
 
   return (
@@ -50,9 +71,8 @@ function SeattleBudget() {
       <Layout>
         <Layout style={{ padding: '0 24px 24px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item onClick={() => setNode(null) }>Seattle Budget { fiscalYear }</Breadcrumb.Item>
-            <Breadcrumb.Item>General Fund</Breadcrumb.Item>
-            <Breadcrumb.Item>{ node }</Breadcrumb.Item>
+            <Breadcrumb.Item>Seattle Budget { fiscalYear }</Breadcrumb.Item>
+            { graphTreeBreadcrumbs }
           </Breadcrumb>
           <Content className="site-layout-background" style={{ margin: 0 }}>
             <div className="site-layout-content">
@@ -64,6 +84,5 @@ function SeattleBudget() {
     </Layout>
   );
 }
-  
-    
+
 export default SeattleBudget;

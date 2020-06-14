@@ -28,7 +28,7 @@ function normalize(tree, row) {
   return tree;
 }
 
-export const budgetData = fetch("https://data.seattle.gov/resource/8u2j-imqx.json?$limit=50000")
+export const budgetDataProvider = fetch("https://data.seattle.gov/resource/8u2j-imqx.json?$limit=50000")
     .then(response => response.json())
     .then(data => data.reduce((tree, row) => {
       return normalize(tree, row)
