@@ -17,7 +17,8 @@ function SeattleBudget() {
   const [budgetData, setBudgetData] = useState();
   const [graphData, setGraphData] = useState();
   const [treePath, setTreePath] = useState(["General Fund"]);
-  const [fiscalYear] = useState("2019");
+  const [fiscalYears, setFiscalYears] = useState([]);
+  const [fiscalYear, setFiscalYear] = useState("2019");
 
   const handleNodeClick = (clickedNode, offset=0) => {
     setTreePath(currentPath => {
@@ -36,6 +37,11 @@ function SeattleBudget() {
     budgetDataProvider.then(data => {
       setBudgetData(data);
       setGraphData(data[fiscalYear]);
+      setFiscalYears(() => {
+        return Object.keys(data).reduce((years, year) => {
+          return [...years, <Menu.Item key={ year}>{ year }</Menu.Item>]
+        }, []);
+      });
     });
   }, [])
   
@@ -44,9 +50,9 @@ function SeattleBudget() {
       setGraphData(treePath.reduce((data, node) => {
         if(node === "General Fund") return data;
         return data["children"][node];
-      }, budgetData["2019"]));
+      }, budgetData[fiscalYear]));
     }
-  }, [treePath, budgetData]);
+  }, [treePath, fiscalYear, budgetData]);
 
   let graphTreeBreadcrumbs = [];
   treePath.forEach((node, index) => {
@@ -78,7 +84,10 @@ function SeattleBudget() {
       <Layout>
         <Layout style={{ padding: '0 24px 24px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Seattle Budget { fiscalYear }</Breadcrumb.Item>
+            <Breadcrumb.Item>Seattle Budget</Breadcrumb.Item>
+            <Breadcrumb.Item overlay={ <Menu selectedKeys={[fiscalYear]} onClick={(item) => { setFiscalYear(item.key) }}>{ fiscalYears }</Menu> }>
+              { fiscalYear }
+            </Breadcrumb.Item>
             { graphTreeBreadcrumbs }
           </Breadcrumb>
           <Content className="site-layout-background" style={{ margin: 0 }}>
