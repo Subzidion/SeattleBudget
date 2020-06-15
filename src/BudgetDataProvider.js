@@ -32,4 +32,4 @@ export const budgetDataProvider = fetch("https://data.seattle.gov/resource/8u2j-
     .then(response => response.json())
     .then(data => data.reduce((tree, row) => {
       return normalize(tree, row)
-    }));
+    }, {}));
